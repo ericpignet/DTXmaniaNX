@@ -52,6 +52,7 @@ namespace DTXMania
 			base.listChildActivities.Add( this.actSongBar = new CActResultSongBar() );
 			base.listChildActivities.Add( this.actFI = new CActFIFOWhite() );
 			base.listChildActivities.Add( this.actFO = new CActFIFOBlack() );
+			base.listChildActivities.Add( this.actPlayerSkillPanel = new CActResultPlayerSkillPanel());
 		}
 
 		
@@ -221,6 +222,7 @@ namespace DTXMania
 					this.nNbPerformances.Guitar = ini.stFile.PlayCountGuitar;
 					this.nNbPerformances.Bass = ini.stFile.PlayCountBass;
 					#endregion
+
 					#region [ Update score information on Song Selection screen ]
 					//---------------------
 					if (!CDTXMania.bCompactMode)
@@ -239,6 +241,7 @@ namespace DTXMania
 								if (this.bNewRecordSkill[m])
 								{
 									cScore.SongInformation.HighSkill[m] = this.stPerformanceEntry[m].dbPerformanceSkill;
+									cScore.SongInformation.HighSongSkill[m] = this.stPerformanceEntry[m].dbGameSkill;
 								}
 
 								if (this.bNewRecordRank[m])
@@ -250,8 +253,22 @@ namespace DTXMania
 					}
 					//---------------------
 					#endregion
-				}
 
+					#region [ Update player skill points ]
+					if (!CDTXMania.bCompactMode)
+					{
+						if (CDTXMania.stageSongSelection.rCurrentBox != null)
+						{
+							double dbOldPlayerSkillPoints = CDTXMania.stageSongSelection.rCurrentBox.dbBoxSkillPoints;
+							DTXMania.CSongManager.tCalculateBoxSkillPoints(CDTXMania.stageSongSelection.rCurrentBox, (EInstrumentPart)(CDTXMania.ConfigIni.bDrumsEnabled ? 0 : 1));
+							double dbPlayerSkillPoints = CDTXMania.stageSongSelection.rCurrentBox.dbBoxSkillPoints;
+							Trace.TraceInformation("Box Skill Points calculated to {0}", dbPlayerSkillPoints);
+							double dbNewPlayerSkillPoints = dbPlayerSkillPoints - dbOldPlayerSkillPoints;
+							this.actPlayerSkillPanel.tGeneratePlayerSkillPoints(dbPlayerSkillPoints, dbNewPlayerSkillPoints);
+						}
+						#endregion
+					}
+				}
 				base.OnActivate();
 			}
 			finally
@@ -634,7 +651,8 @@ namespace DTXMania
                 {
                     this.bAnimationComplete = false;
                 }
-				if( base.ePhaseID == CStage.EPhase.Common_FadeIn )
+				this.actPlayerSkillPanel.OnUpdateAndDraw();
+				if ( base.ePhaseID == CStage.EPhase.Common_FadeIn )
 				{
 					if( this.actFI.OnUpdateAndDraw() != 0 )
 					{
@@ -787,6 +805,7 @@ namespace DTXMania
 		private CActResultRank actRank;
 		private CActResultImage actResultImage;
 		private CActResultSongBar actSongBar;
+		private CActResultPlayerSkillPanel actPlayerSkillPanel;
 		private bool bAnimationComplete;  // bアニメが完了
 		private bool bIsCheckedWhetherResultScreenShouldSaveOrNot;				// #24509 2011.3.14 yyagi
 		private readonly int[] nチャンネル0Atoレーン07;

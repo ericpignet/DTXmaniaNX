@@ -7,14 +7,14 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace DTXMania
 {
     [Serializable]
-    internal class CScore
+    internal class CScore  // Cスコア
     {
         // プロパティ
 
         public STScoreIniInformation ScoreIniInformation;
         [Serializable]
         [StructLayout(LayoutKind.Sequential)]
-        public struct STScoreIniInformation
+        public struct STScoreIniInformation  // STScoreIni情報
         {
             public DateTime LastModified;
             public long FileSize;
@@ -29,7 +29,7 @@ namespace DTXMania
         public STFileInformation FileInformation;
         [Serializable]
         [StructLayout(LayoutKind.Sequential)]
-        public struct STFileInformation
+        public struct STFileInformation  // STファイル情報
         {
             public string AbsoluteFilePath;
             public string AbsoluteFolderPath;
@@ -45,33 +45,33 @@ namespace DTXMania
             }
         }
 
-        public STMusicInformation SongInformation;
+        public STMusicInformation SongInformation;  // 譜面情報
         [Serializable]
         [StructLayout(LayoutKind.Sequential)]
-        public struct STMusicInformation
+        public struct STMusicInformation  // ST譜面情報
         {
-            public string Title;
-            public string ArtistName;
-            public string Comment;
-            public string Genre;
+            public string Title;                    // タイトル
+            public string ArtistName;               // アーティスト名
+            public string Comment;                  // コメント
+            public string Genre;                    // ジャンル
             public string Preimage;
             public string Premovie;
             public string Presound;
             public string Backgound;
-            public STDGBVALUE<int> Level;
-            public STDGBVALUE<int> LevelDec;
-            public STRANK BestRank;
-            public STSKILL HighSkill;
-            public STSKILL HighSongSkill;
-            public STDGBVALUE<bool> FullCombo;
-            public STDGBVALUE<int> NbPerformances;
-            public STHISTORY PerformanceHistory;
-            public bool bHiddenLevel;
-            public CDTX.EType SongType;
+            public STDGBVALUE<int> Level;           // レベル
+            public STDGBVALUE<int> LevelDec;        // レベルDec
+            public STRANK BestRank;                 // 最大ランク
+            public STSKILL HighSkill;               // スキル
+            public STSKILL HighSongSkill;           // 最大曲別スキル
+            public STDGBVALUE<bool> FullCombo;      // フルコンボ
+            public STDGBVALUE<int> NbPerformances;  // 演奏回数;
+            public STHISTORY PerformanceHistory;    // 演奏履歴
+            public bool bHiddenLevel;               // レベルを非表示にする
+            public CDTX.EType SongType;             // E種別 曲種別
             public double Bpm;
             public int Duration;
             public STDGBVALUE<bool> b完全にCLASSIC譜面である;
-            public STDGBVALUE<bool> bScoreExists;
+            public STDGBVALUE<bool> bScoreExists;   // b譜面がある
 
             [Serializable]
             [StructLayout(LayoutKind.Sequential)]

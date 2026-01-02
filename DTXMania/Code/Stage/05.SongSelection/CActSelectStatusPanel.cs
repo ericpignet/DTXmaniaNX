@@ -20,7 +20,7 @@ namespace DTXMania
         }
         public void tSelectedSongChanged()
         {
-            CSongListNode c曲リストノード = CDTXMania.stageSongSelection.r現在選択中の曲;
+            CSongListNode c曲リストノード = CDTXMania.stageSongSelection.rSelectedSong;
             CScore cスコア = CDTXMania.stageSongSelection.rSelectedScore;
             if ((c曲リストノード != null) && (cスコア != null))
             {
@@ -215,7 +215,7 @@ namespace DTXMania
                 CScore cスコア = CDTXMania.stageSongSelection.rSelectedScore;
 
                 #region [ 選択曲の BPM の描画 ]
-                if (CDTXMania.stageSongSelection.r現在選択中の曲 != null && this.txBPM画像 != null)
+                if (CDTXMania.stageSongSelection.rSelectedSong != null && this.txBPM画像 != null)
                 {
 
                     int nBPM位置X = 490;
@@ -228,7 +228,7 @@ namespace DTXMania
                     }
 
                     string strBPM;
-                    switch (CDTXMania.stageSongSelection.r現在選択中の曲.eNodeType)
+                    switch (CDTXMania.stageSongSelection.rSelectedSong.eNodeType)
                     {
                         case CSongListNode.ENodeType.SCORE:
                             {
@@ -299,7 +299,7 @@ namespace DTXMania
                         int[] n難易度小数 = new int[5];
                         for (int i = 0; i < 5; i++)
                         {
-                            if (this.str難易度ラベル[i] != null || CDTXMania.stageSongSelection.r現在選択中の曲.eNodeType == CSongListNode.ENodeType.RANDOM)
+                            if (this.str難易度ラベル[i] != null || CDTXMania.stageSongSelection.rSelectedSong.eNodeType == CSongListNode.ENodeType.RANDOM)
                             {
 
                                 int nBoxX = nPanelX;
@@ -388,7 +388,7 @@ namespace DTXMania
                                 }
 
                             }
-                            else if (CDTXMania.stageSongSelection.r現在選択中の曲.eNodeType == CSongListNode.ENodeType.SCORE)
+                            else if (CDTXMania.stageSongSelection.rSelectedSong.eNodeType == CSongListNode.ENodeType.SCORE)
                             {
                                 flag = flag + 1;
                             }
@@ -411,11 +411,11 @@ namespace DTXMania
                                 n難易度小数[0] = (this.n現在選択中の曲のレベル[ j ] - ( n難易度整数[ 0 ] * 10 ) ) * 10;
                                 n難易度小数[0] += this.n現在選択中の曲のレベル小数点[ j ];
 
-                                if (this.b現在選択中の曲の譜面[j] && CDTXMania.stageSongSelection.r現在選択中の曲.eNodeType == CSongListNode.ENodeType.SCORE)
+                                if (this.b現在選択中の曲の譜面[j] && CDTXMania.stageSongSelection.rSelectedSong.eNodeType == CSongListNode.ENodeType.SCORE)
                                 {
                                     this.tDrawDifficulty(nBoxX + nPanelW - 77, nBoxY + nPanelH - 35, string.Format("{0,4:0.00}", ((double)n難易度整数[ 0 ]) + (((double)n難易度小数[ 0 ]) / 100)));
                                 }
-                                else if (!this.b現在選択中の曲の譜面[j] && CDTXMania.stageSongSelection.r現在選択中の曲.eNodeType == CSongListNode.ENodeType.SCORE)
+                                else if (!this.b現在選択中の曲の譜面[j] && CDTXMania.stageSongSelection.rSelectedSong.eNodeType == CSongListNode.ENodeType.SCORE)
                                 {
                                     this.tDrawDifficulty(nBoxX + nPanelW - 77, nBoxY + nPanelH - 35, ("-.--"));
                                 }
@@ -516,6 +516,16 @@ namespace DTXMania
                 this.rc = rc;
             }
         }
+        private struct STSongSkillNumber
+        {
+            public char ch;
+            public Rectangle rc;
+            public STSongSkillNumber(char ch, Rectangle rc)
+            {
+                this.ch = ch;
+                this.rc = rc;
+            }
+        }
 
         private STDGBVALUE<bool> b現在選択中の曲がフルコンボ;
         private STDGBVALUE<bool> b現在選択中の曲の譜面;
@@ -600,6 +610,23 @@ namespace DTXMania
             new ST達成率数字('9', new Rectangle(9 * 12, 0, 12, 20)),
             new ST達成率数字('.', new Rectangle(10 * 12, 0, 6, 20)),
             new ST達成率数字('%', new Rectangle(11 * 12 - 6, 0, 12, 20))
+        };
+        private readonly STSongSkillNumber[] stSongSkillNumber = new STSongSkillNumber[]
+        {
+            //TODO remove unwanted characters from image and code
+            new STSongSkillNumber('0', new Rectangle(0 * 20, 0, 20, 28)),
+            new STSongSkillNumber('1', new Rectangle(1 * 20, 0, 20, 28)),
+            new STSongSkillNumber('2', new Rectangle(2 * 20, 0, 20, 28)),
+            new STSongSkillNumber('3', new Rectangle(3 * 20, 0, 20, 28)),
+            new STSongSkillNumber('4', new Rectangle(4 * 20, 0, 20, 28)),
+            new STSongSkillNumber('5', new Rectangle(5 * 20, 0, 20, 28)),
+            new STSongSkillNumber('6', new Rectangle(6 * 20, 0, 20, 28)),
+            new STSongSkillNumber('7', new Rectangle(7 * 20, 0, 20, 28)),
+            new STSongSkillNumber('8', new Rectangle(8 * 20, 0, 20, 28)),
+            new STSongSkillNumber('9', new Rectangle(9 * 20, 0, 20, 28)),
+            new STSongSkillNumber('.', new Rectangle(10 * 20, 0, 10, 28)),
+            new STSongSkillNumber('-', new Rectangle(11 * 20 - 10, 0, 20, 28)),
+            new STSongSkillNumber('?', new Rectangle(12 * 20 - 10, 0, 20, 28))
         };
         private readonly Rectangle rcunused = new Rectangle(0, 0x21, 80, 15);
         public CTexture txパネル本体;

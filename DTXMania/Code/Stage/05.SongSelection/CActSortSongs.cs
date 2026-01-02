@@ -16,9 +16,10 @@ namespace DTXMania
 			lci.Add( new CItemList( "Title",		CItemBase.EPanelType.Normal, 0, "", "", new string[] { "Z,Y,X,...",		"A,B,C,..." } ) );
 			lci.Add( new CItemList( "Level",		CItemBase.EPanelType.Normal, 0, "", "", new string[] { "99,98,97,...",	"1,2,3,..." } ) );
 			lci.Add( new CItemList( "Best Rank",	CItemBase.EPanelType.Normal, 0, "", "", new string[] { "E,D,C,...",		"SS,S,A,..." } ) );
-			lci.Add( new CItemList( "PlayCount",	CItemBase.EPanelType.Normal, 0, "", "", new string[] { "10,9,8,...",		"1,2,3,..." } ) );
+			lci.Add( new CItemList( "Play Count",	CItemBase.EPanelType.Normal, 0, "", "", new string[] { "10,9,8,...",		"1,2,3,..." } ) );
 			lci.Add( new CItemList( "Author",		CItemBase.EPanelType.Normal, 0, "", "", new string[] { "Z,Y,X,...",		"A,B,C,..." } ) );
-			lci.Add( new CItemList( "SkillPoint",	CItemBase.EPanelType.Normal, 0, "", "", new string[] { "100,99,98,...",	"1,2,3,..." } ) );
+			lci.Add( new CItemList( "Skill rate",   CItemBase.EPanelType.Normal, 0, "", "", new string[] { "100,99,98,...", "1,2,3,..." } ) );
+			lci.Add( new CItemList( "Skill points", CItemBase.EPanelType.Normal, 0, "", "", new string[] { "200,199,198,...", "1,2,3,..." } ) );
 #if TEST_SORTBGM
 			lci.Add( new CItemList( "BPM",			CItemBase.Eパネル種別.通常, 0, "", "", new string[] { "300,200,...",	"70,80,90,..." } ) );
 #endif
@@ -49,44 +50,51 @@ namespace DTXMania
 			{
 				case (int) EOrder.Title:
 					this.actSongList.tSortSongList(
-						CDTXMania.SongManager.t曲リストのソート2_タイトル順, eInst, nSortOrder
+						CDTXMania.SongManager.tSortSongList2_ByTitle, eInst, nSortOrder
 					);
-					this.actSongList.t選択曲が変更された(true);
+					this.actSongList.tPostProcessSelectedSongChanged(true);
 					break;
 				case (int) EOrder.Level:
 					this.actSongList.tSortSongList(
-						CDTXMania.SongManager.t曲リストのソート4_LEVEL順, eInst, nSortOrder,
+						CDTXMania.SongManager.tSortSongList4_ByLEVEL, eInst, nSortOrder,
 						this.actSongList.n現在のアンカ難易度レベル
 					);
-					this.actSongList.t選択曲が変更された( true );
+					this.actSongList.tPostProcessSelectedSongChanged( true );
 					break;
 				case (int) EOrder.BestRank:
 					this.actSongList.tSortSongList(
-						CDTXMania.SongManager.t曲リストのソート5_BestRank順, eInst, nSortOrder,
+						CDTXMania.SongManager.tSortSongList5_ByBestRank, eInst, nSortOrder,
 						this.actSongList.n現在のアンカ難易度レベル
 					);
 					break;
 				case (int) EOrder.PlayCount:
 					// this.actSongList.t曲リストのソート3_演奏回数の多い順( eInst, nSortOrder );
 					this.actSongList.tSortSongList(
-						CDTXMania.SongManager.t曲リストのソート3_演奏回数の多い順, eInst, nSortOrder,
+						CDTXMania.SongManager.tSortSongList3_ByPlayCount, eInst, nSortOrder,
 						this.actSongList.n現在のアンカ難易度レベル
 					);
-					this.actSongList.t選択曲が変更された( true );
+					this.actSongList.tPostProcessSelectedSongChanged( true );
 					break;
 				case (int) EOrder.Author:
 					this.actSongList.tSortSongList(
-						CDTXMania.SongManager.t曲リストのソート8_アーティスト名順, eInst, nSortOrder,
+						CDTXMania.SongManager.tSortSongList8_ByArtistName, eInst, nSortOrder,
 						this.actSongList.n現在のアンカ難易度レベル
 					);
-					this.actSongList.t選択曲が変更された( true );
+					this.actSongList.tPostProcessSelectedSongChanged( true );
 					break;
-				case (int) EOrder.SkillPoint:
+				case (int) EOrder.SkillRate:
 					this.actSongList.tSortSongList(
-						CDTXMania.SongManager.t曲リストのソート6_SkillPoint順, eInst, nSortOrder,
+						CDTXMania.SongManager.tSortSongList6_BySkillRate, eInst, nSortOrder,
 						this.actSongList.n現在のアンカ難易度レベル
 					);
-					this.actSongList.t選択曲が変更された( true );
+					this.actSongList.tPostProcessSelectedSongChanged( true );
+					break;
+				case (int)EOrder.SongSkill:
+					this.actSongList.tSortSongList(
+						CDTXMania.SongManager.tSortSongList10_BySongSkill, eInst, nSortOrder,
+						this.actSongList.n現在のアンカ難易度レベル
+					);
+					this.actSongList.tPostProcessSelectedSongChanged(true);
 					break;
 #if TEST_SORTBGM
 						case (int) ESortItem.BPM:
@@ -99,10 +107,10 @@ namespace DTXMania
 #endif
 				case (int) EOrder.Date:
 					this.actSongList.tSortSongList(
-						CDTXMania.SongManager.t曲リストのソート7_更新日時順, eInst, nSortOrder,
+						CDTXMania.SongManager.tSortSongList7_ByUpdateTime, eInst, nSortOrder,
 						this.actSongList.n現在のアンカ難易度レベル
 					);
-					this.actSongList.t選択曲が変更された( true );
+					this.actSongList.tPostProcessSelectedSongChanged( true );
 					break;
 				case (int) EOrder.Return:
 					this.tDeativatePopupMenu();
@@ -146,7 +154,8 @@ namespace DTXMania
 		{
 			Title = 0, Level, BestRank, PlayCount,
 			Author,
-			SkillPoint,
+			SkillRate,
+			SongSkill,
 #if TEST_SORTBGM
 			BPM,
 #endif

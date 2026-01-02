@@ -300,7 +300,7 @@ namespace DTXMania
 			bool bGradation = ((drawmode & DrawMode.Gradation) == DrawMode.Gradation);
 
 			// 縁取りの縁のサイズは、とりあえずフォントの大きさの1/4とする
-			int nEdgePt = (bEdge) ? _pt / 4 : 0;
+			int nEdgePt = (bEdge || bGradation) ? _pt / 4 : 0;
 
 			// 描画サイズを測定する
 			Size stringSize = System.Windows.Forms.TextRenderer.MeasureText(drawstr, this._font, new Size(int.MaxValue, int.MaxValue),
@@ -322,7 +322,7 @@ namespace DTXMania
 			//Rectangle r = new Rectangle( 0, 0, stringSize.Width + nEdgePt * 2, stringSize.Height + nEdgePt * 2 );
 			Rectangle r = new Rectangle(0, 0, stringSize.Width + nEdgePt * 2, stringSize.Height + nEdgePt * 2); //#34638 2014.11.24 kairera0467 とりあえず文字の横サイズを1.5倍に変更。
 
-			if (bEdge)  // 縁取り有りの描画
+			if (bEdge || bGradation)  // Drawing with border or gradiant
 			{
 				// DrawPathで、ポイントサイズを使って描画するために、DPIを使って単位変換する
 				// (これをしないと、単位が違うために、小さめに描画されてしまう)
@@ -331,10 +331,14 @@ namespace DTXMania
 				System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
 				gp.AddString(drawstr, this._fontfamily, (int)this._font.Style, sizeInPixels, r, sf);
 
-				// 縁取りを描画する
-				Pen p = new Pen(edgeColor, nEdgePt);
-				p.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
-				g.DrawPath(p, gp);
+				if (bEdge)
+				{
+					// 縁取りを描画する
+					Pen p = new Pen(edgeColor, nEdgePt);
+					p.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
+					g.DrawPath(p, gp);
+					if (p != null) p.Dispose();
+				}
 
 				// 塗りつぶす
 				Brush br;
@@ -349,7 +353,6 @@ namespace DTXMania
 				g.FillPath(br, gp);
 
 				if (br != null) br.Dispose(); br = null;
-				if (p != null) p.Dispose(); p = null;
 				if (gp != null) gp.Dispose(); gp = null;
 			}
 			else

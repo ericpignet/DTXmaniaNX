@@ -66,6 +66,12 @@ namespace DTXMania
 			private set;
 		}
 
+		public CSongListNode rCurrentBox
+		{
+			get;
+			private set;
+		}
+
 		public int nスクロールバー相対y座標
 		{
 			get;
@@ -82,11 +88,13 @@ namespace DTXMania
 		public CActSelectSongList()
 		{
 			this.rSelectedSong = null;
+			this.rCurrentBox = null;
 			this.n現在のアンカ難易度レベル = 0;
 			base.bNotActivated = true;
 			this.bIsEnumeratingSongs = false;
 
-            base.listChildActivities.Add( this.actステータスパネル = new CActSelectStatusPanel() );
+			// actステータスパネル is instanciated just to check if a texture is present? seems unoptimal
+			base.listChildActivities.Add( this.actステータスパネル = new CActSelectStatusPanel() );
 
             this.stパネルマップ = null;
             this.stパネルマップ = new STATUSPANEL[12];		// yyagi: 以下、手抜きの初期化でスマン
@@ -206,7 +214,7 @@ namespace DTXMania
 			else
 			{
 				sf( songList, eInst, order, p );
-				this.t現在選択中の曲を元に曲バーを再構成する();
+				this.tGenerateAllSongBars();
 			}
 		}
 
@@ -224,9 +232,14 @@ namespace DTXMania
 
 			if( ( this.rSelectedSong.list子リスト != null ) && ( this.rSelectedSong.list子リスト.Count > 0 ) )
 			{
+				DTXMania.CSongManager.tCalculateBoxSkillPoints(rSelectedSong, this.eInstrumentPart);
+				Trace.TraceInformation("Box Skill Points calculated to {0}", rSelectedSong.dbBoxSkillPoints);
+				this.rCurrentBox = this.rSelectedSong;
+
 				this.rSelectedSong = this.rSelectedSong.list子リスト[ 0 ];
-				this.t現在選択中の曲を元に曲バーを再構成する();
-				this.t選択曲が変更された(false);									// #27648 項目数変更を反映させる
+
+				this.tGenerateAllSongBars();
+				this.tPostProcessSelectedSongChanged(false);									// #27648 項目数変更を反映させる
 			}
 			return ret;
 		}
@@ -243,14 +256,22 @@ namespace DTXMania
 			if ( this.rSelectedSong.r親ノード != null )
 			{
 				this.rSelectedSong = this.rSelectedSong.r親ノード;
-				this.t現在選択中の曲を元に曲バーを再構成する();
-				this.t選択曲が変更された(false);									// #27648 項目数変更を反映させる
+
+				this.rCurrentBox = this.rSelectedSong.r親ノード;
+				if (this.rCurrentBox != null)
+				{
+					DTXMania.CSongManager.tCalculateBoxSkillPoints(rCurrentBox, this.eInstrumentPart);
+					Trace.TraceInformation("Box Skill Points calculated to {0}", rCurrentBox.dbBoxSkillPoints);
+				}
+
+				this.tGenerateAllSongBars();
+				this.tPostProcessSelectedSongChanged(false);									// #27648 項目数変更を反映させる
 			}
 			return ret;
 		}
-		public void t現在選択中の曲を元に曲バーを再構成する()
+		public void tGenerateAllSongBars()  // t現在選択中の曲を元に曲バーを再構成する
 		{
-			this.tInitializeBar();
+			this.tInitializeBars();
 			for( int i = 0; i < 13; i++ )
 			{
 				this.tGenerateSongNameBar( i, this.stBarInformation[ i ].strTitleString, this.stBarInformation[ i ].colLetter );
@@ -393,8 +414,8 @@ namespace DTXMania
 		public void SearchUpdate()
         {
 			this.rSelectedSong = CDTXMania.SongManager.listSongRoot[0];
-			this.t現在選択中の曲を元に曲バーを再構成する();
-			this.t選択曲が変更された(true);
+			this.tGenerateAllSongBars();
+			this.tPostProcessSelectedSongChanged(true);
 			CDTXMania.stageSongSelection.tSelectedSongChanged();
 		}
 
@@ -415,7 +436,7 @@ namespace DTXMania
 					this.rSelectedSong = searchCurrentBreadcrumbsPosition( CDTXMania.SongManager.listSongRoot, this.rSelectedSong.strBreadcrumbs );
 					if ( bRemakeSongTitleBar )					// 選曲画面以外に居るときには再構成しない (非活性化しているときに実行すると例外となる)
 					{
-						this.t現在選択中の曲を元に曲バーを再構成する();
+						this.tGenerateAllSongBars();
 					}
 #if false          // list子リストの中まではmatchしてくれないので、検索ロジックは手書きで実装 (searchCurrentBreadcrumbs())
 					string bc = this.rSelectedSong.strBreadcrumbs;
@@ -465,9 +486,9 @@ namespace DTXMania
 		/// <summary>
 		/// BOXのアイテム数と、今何番目を選択しているかをセットする
 		/// </summary>
-		public void t選択曲が変更された( bool bForce)    // t選択曲が変更された  #27648
+		public void tPostProcessSelectedSongChanged( bool bForce)    // t選択曲が変更された  #27648
 		{
-			CSongListNode song = CDTXMania.stageSongSelection.r現在選択中の曲;
+			CSongListNode song = CDTXMania.stageSongSelection.rSelectedSong;
 			if ( song == null )
 				return;
 			if ( song == song_last && bForce == false )
@@ -517,11 +538,11 @@ namespace DTXMania
 
 			// バー情報を初期化する。
 
-			this.tInitializeBar();
+			this.tInitializeBars();
 
 			base.OnActivate();
 
-			this.t選択曲が変更された(true);		// #27648 2012.3.31 yyagi 選曲画面に入った直後の 現在位置/全アイテム数 の表示を正しく行うため
+			this.tPostProcessSelectedSongChanged(true);		// #27648 2012.3.31 yyagi 選曲画面に入った直後の 現在位置/全アイテム数 の表示を正しく行うため
 		}
 		public override void OnDeactivate()
 		{
@@ -815,7 +836,7 @@ namespace DTXMania
 						this.nCurrentScrollCounter -= 100;
 						this.nTargetScrollCounter -= 100;
 
-						this.t選択曲が変更された( false );				// スクロールバー用に今何番目を選択しているかを更新
+						this.tPostProcessSelectedSongChanged( false );				// スクロールバー用に今何番目を選択しているかを更新
                         if( this.tx選択中の曲名テクスチャ != null )
                         {
                             this.tx選択中の曲名テクスチャ.Dispose();
@@ -881,7 +902,7 @@ namespace DTXMania
 						this.nCurrentScrollCounter += 100;
 						this.nTargetScrollCounter += 100;
 
-						this.t選択曲が変更された( false );				// スクロールバー用に今何番目を選択しているかを更新
+						this.tPostProcessSelectedSongChanged( false );				// スクロールバー用に今何番目を選択しているかを更新
                         if( this.tx選択中の曲名テクスチャ != null )
                         {
                             this.tx選択中の曲名テクスチャ.Dispose();
@@ -1038,7 +1059,7 @@ namespace DTXMania
 						if( this.stBarInformation[ nパネル番号 ].txTitleName != null )
                             this.stBarInformation[ nパネル番号 ].txTitleName.tDraw2D( CDTXMania.app.Device, i選択曲バーX座標 + 45, y選曲 );
 
-                        if (CDTXMania.stageSongSelection.r現在選択中の曲.eNodeType == CSongListNode.ENodeType.SCORE && this.actステータスパネル.txパネル本体 == null)
+                        if (CDTXMania.stageSongSelection.rSelectedSong.eNodeType == CSongListNode.ENodeType.SCORE && this.actステータスパネル.txパネル本体 == null)
                         {
                             if (this.tx選択中の曲名テクスチャ == null)
                                 this.tx選択中の曲名テクスチャ = this.tGenerateTextTexture(CDTXMania.stageSongSelection.rSelectedScore.SongInformation.Title);
@@ -1377,7 +1398,7 @@ namespace DTXMania
 					break;
 			}
 		}
-		private void tInitializeBar()  // tバーの初期化
+		private void tInitializeBars()  // tバーの初期化
 		{
 			CSongListNode song = this.rSelectedSong;
 			

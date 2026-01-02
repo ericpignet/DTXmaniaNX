@@ -53,6 +53,7 @@ namespace DTXMania
 		public string strBreadcrumbs = "";		// #27060 2011.2.27 yyagi; MUSIC BOXのパンくずリスト (曲リスト構造内の絶対位置捕捉のために使う)
 		public string strSkinPath = "";			// #28195 2012.5.4 yyagi; box.defでのスキン切り替え対応
         public string strバージョン = "";
+		public double dbBoxSkillPoints = -1;
 		
 		// コンストラクタ
 
@@ -88,8 +89,36 @@ namespace DTXMania
 			newNode.strバージョン = this.strバージョン;
 			newNode.strBreadcrumbs = this.strBreadcrumbs;
 			newNode.strSkinPath = this.strSkinPath;
+			newNode.dbBoxSkillPoints = this.dbBoxSkillPoints;
 
 			return newNode;
+		}
+
+		public double tGetHighestSongSkill(bool bIsGuitar)
+        {
+			double dbMax = 0;
+
+			int[] arInst;
+			if (bIsGuitar)
+				arInst = new int[] { (int)EInstrumentPart.GUITAR, (int)EInstrumentPart.BASS };
+			else
+				arInst = new int[] { (int)EInstrumentPart.DRUMS };
+
+			for (int nLevel = 0; nLevel < 5; nLevel++) // loop on difficulty levels
+			{
+				if (this.arScore[nLevel] != null)
+				{
+					foreach (int nInst in arInst) // loop on instruments
+					{
+						if (this.arScore[nLevel].SongInformation.bScoreExists[nInst])
+						{
+							if (this.arScore[nLevel].SongInformation.HighSongSkill[nInst] > dbMax)
+								dbMax = this.arScore[nLevel].SongInformation.HighSongSkill[nInst];
+						}
+					}
+				}
+			}
+			return dbMax;
 		}
 
 		// Other

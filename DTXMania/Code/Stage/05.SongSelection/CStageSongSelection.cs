@@ -87,11 +87,18 @@ namespace DTXMania
 				return this.actSongList.rSelectedScore;
 			}
 		}
-		public CSongListNode r現在選択中の曲
+		public CSongListNode rSelectedSong  // r現在選択中の曲
 		{
 			get
 			{
 				return this.actSongList.rSelectedSong;
+			}
+		}
+		public CSongListNode rCurrentBox
+		{
+			get
+			{
+				return this.actSongList.rCurrentBox;
 			}
 		}
 
@@ -115,6 +122,8 @@ namespace DTXMania
 			base.listChildActivities.Add( this.actSortSongs = new CActSortSongs() );
 			base.listChildActivities.Add( this.actShowCurrentPosition = new CActSelectShowCurrentPosition() );
 			base.listChildActivities.Add( this.actQuickConfig = new CActSelectQuickConfig() );
+			base.listChildActivities.Add( this.actPlayerSkillPanel = new CActSelectPlayerSkillPanel() );
+			base.listChildActivities.Add( this.actSongSkillPanel = new CActSelectSongSkillPanel());
 
 			//
 			base.listChildActivities.Add(this.actTextBox = new CActTextBox());
@@ -137,7 +146,7 @@ namespace DTXMania
 			//---------------------
 			if( CDTXMania.app != null )
 			{
-				var c曲リストノード = CDTXMania.stageSongSelection.r現在選択中の曲;
+				var c曲リストノード = CDTXMania.stageSongSelection.rSelectedSong;
 				var cスコア = CDTXMania.stageSongSelection.rSelectedScore;
 
 				if( c曲リストノード != null && cスコア != null && c曲リストノード.eNodeType == CSongListNode.ENodeType.SCORE )
@@ -193,8 +202,8 @@ namespace DTXMania
 				base.OnActivate();
 
 				this.actTextBox.t検索説明文を表示する設定にする();
-				this.actStatusPanel.tSelectedSongChanged();	// 最大ランクを更新
-
+				this.actStatusPanel.tSelectedSongChanged(); // 最大ランクを更新
+				this.actPlayerSkillPanel.tGeneratePlayerSkillPoints();
 			}
 			finally
 			{
@@ -294,6 +303,7 @@ namespace DTXMania
 			//	this.bIsEnumeratingSongs = !this.actPreimageパネル.bIsPlayingPremovie;				// #27060 2011.3.2 yyagi: #PREMOVIE再生中は曲検索を中断する
 
 				this.actStatusPanel.OnUpdateAndDraw();
+				this.actSongSkillPanel.OnUpdateAndDraw();
 				this.actArtistComment.OnUpdateAndDraw();
 				this.actSongList.OnUpdateAndDraw();
 				this.actPerHistoryPanel.OnUpdateAndDraw();
@@ -313,7 +323,8 @@ namespace DTXMania
 
 				this.actPresound.OnUpdateAndDraw();
 //				this.actオプションパネル.OnUpdateAndDraw();
-				this.actShowCurrentPosition.OnUpdateAndDraw();								// #27648 2011.3.28 yyagi
+				this.actShowCurrentPosition.OnUpdateAndDraw();                              // #27648 2011.3.28 yyagi
+				this.actPlayerSkillPanel.OnUpdateAndDraw();
 
 				switch ( base.ePhaseID )
 				{
@@ -439,8 +450,9 @@ namespace DTXMania
                                                     this.eReturnValueWhenFadeOutCompleted = EReturnValue.ChangeSking;
                                                     base.ePhaseID = EPhase.選曲_NowLoading画面へのフェードアウト;
                                                 }
-                                            }
-                                            break;
+												this.actPlayerSkillPanel.tGeneratePlayerSkillPoints();
+											}
+											break;
 
                                         case CSongListNode.ENodeType.BACKBOX:
                                             {
@@ -803,6 +815,8 @@ namespace DTXMania
 		private CActSelectPerfHistoryPanel actPerHistoryPanel;  // act演奏履歴パネル
 		private CActSelectSongList actSongList;
 		private CActSelectShowCurrentPosition actShowCurrentPosition;
+		private CActSelectPlayerSkillPanel actPlayerSkillPanel;
+		private CActSelectSongSkillPanel actSongSkillPanel;
 
 		private CActSortSongs actSortSongs;
 		private CActSelectQuickConfig actQuickConfig;

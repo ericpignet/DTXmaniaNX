@@ -783,6 +783,9 @@ namespace DTXMania
 			cスコア.SongInformation.HighSkill.Drums = br.ReadDouble();
 			cスコア.SongInformation.HighSkill.Guitar = br.ReadDouble();
 			cスコア.SongInformation.HighSkill.Bass = br.ReadDouble();
+			cスコア.SongInformation.HighSongSkill.Drums = br.ReadDouble();
+			cスコア.SongInformation.HighSongSkill.Guitar = br.ReadDouble();
+			cスコア.SongInformation.HighSongSkill.Bass = br.ReadDouble();
 			cスコア.SongInformation.FullCombo.Drums = br.ReadBoolean();
 			cスコア.SongInformation.FullCombo.Guitar = br.ReadBoolean();
 			cスコア.SongInformation.FullCombo.Bass = br.ReadBoolean();
@@ -1090,7 +1093,7 @@ namespace DTXMania
 
 			#region [ ノードをソートする ]
 			//-----------------------------
-			this.t曲リストのソート1_絶対パス順( ノードリスト );
+			this.tSortSongList1_ByAbsolutePath( ノードリスト );
 			//-----------------------------
 			#endregion
 		}
@@ -1151,6 +1154,9 @@ namespace DTXMania
 					bw.Write( node.arScore[ i ].SongInformation.HighSkill.Drums );
 					bw.Write( node.arScore[ i ].SongInformation.HighSkill.Guitar );
 					bw.Write( node.arScore[ i ].SongInformation.HighSkill.Bass );
+					bw.Write( node.arScore[ i ].SongInformation.HighSongSkill.Drums);
+					bw.Write( node.arScore[ i ].SongInformation.HighSongSkill.Guitar);
+					bw.Write( node.arScore[ i ].SongInformation.HighSongSkill.Bass);
 					bw.Write( node.arScore[ i ].SongInformation.FullCombo.Drums );
 					bw.Write( node.arScore[ i ].SongInformation.FullCombo.Guitar );
 					bw.Write( node.arScore[ i ].SongInformation.FullCombo.Bass );
@@ -1194,9 +1200,9 @@ namespace DTXMania
 		//-----------------
 		#endregion
 		
-		#region [ 曲リストソート ]
+		#region [ Sort song list ]
 		//-----------------
-		public void t曲リストのソート1_絶対パス順( List<CSongListNode> ノードリスト )
+		public void tSortSongList1_ByAbsolutePath( List<CSongListNode> ノードリスト)  //t曲リストのソート1_絶対パス順
 		{
 			ノードリスト.Sort( delegate( CSongListNode n1, CSongListNode n2 )
 			{
@@ -1261,11 +1267,11 @@ namespace DTXMania
 			{
 				if( ( c曲リストノード.list子リスト != null ) && ( c曲リストノード.list子リスト.Count > 1 ) )
 				{
-					this.t曲リストのソート1_絶対パス順( c曲リストノード.list子リスト );
+					this.tSortSongList1_ByAbsolutePath( c曲リストノード.list子リスト );
 				}
 			}
 		}
-		public void t曲リストのソート2_タイトル順( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p )
+		public void tSortSongList2_ByTitle( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p)  // t曲リストのソート2_タイトル順
 		{
 			ノードリスト.Sort( delegate( CSongListNode n1, CSongListNode n2 )
 			{
@@ -1294,7 +1300,7 @@ namespace DTXMania
 		/// <param name="ノードリスト"></param>
 		/// <param name="part"></param>
 		/// <param name="order">1=Ascend -1=Descend</param>
-		public void t曲リストのソート3_演奏回数の多い順( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p )
+		public void tSortSongList3_ByPlayCount( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p)  // t曲リストのソート3_演奏回数の多い順
 		{
 			order = -order;
 			int nL12345 = (int) p[ 0 ];
@@ -1358,7 +1364,7 @@ namespace DTXMania
 //				}
 			}
 		}
-		public void t曲リストのソート4_LEVEL順( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p )
+		public void tSortSongList4_ByLEVEL( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p)  // t曲リストのソート4_LEVEL順
 		{
 			order = -order;
 			int nL12345 = (int)p[ 0 ];
@@ -1409,7 +1415,7 @@ namespace DTXMania
 				}
 			}
 		}
-		public void t曲リストのソート5_BestRank順( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p )
+		public void tSortSongList5_ByBestRank( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p)  // t曲リストのソート5_BestRank順
 		{
 			order = -order;
 			int nL12345 = (int) p[ 0 ];
@@ -1466,7 +1472,7 @@ namespace DTXMania
 				}
 			}
 		}
-		public void t曲リストのソート6_SkillPoint順( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p )
+		public void tSortSongList6_BySkillRate( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p)  // t曲リストのソート6_SkillPoint順
 		{
 			order = -order;
 			int nL12345 = (int) p[ 0 ];
@@ -1512,11 +1518,11 @@ namespace DTXMania
 					{
 						nSumPlayCountN1 = c曲リストノード.arScore[ nL12345 ].SongInformation.HighSkill[ (int) part ];
 					}
-// Debug.WriteLine( nSumPlayCountN1 + ":" + c曲リストノード.strタイトル );
+					// Debug.WriteLine( nSumPlayCountN1 + ":" + c曲リストノード.strタイトル );
 				}
 			}
 		}
-		public void t曲リストのソート7_更新日時順( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p )
+		public void tSortSongList7_ByUpdateTime( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p)  // t曲リストのソート7_更新日時順
 		{
 			int nL12345 = (int) p[ 0 ];
 			if ( part != EInstrumentPart.UNKNOWN )
@@ -1566,7 +1572,7 @@ namespace DTXMania
 				}
 			}
 		}
-		public void t曲リストのソート8_アーティスト名順( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p )
+		public void tSortSongList8_ByArtistName( List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p)  // t曲リストのソート8_アーティスト名順
 		{
 			int nL12345 = (int) p[ 0 ]; 
 			ノードリスト.Sort( delegate( CSongListNode n1, CSongListNode n2 )
@@ -1612,7 +1618,7 @@ Debug.WriteLine( s + ":" + c曲リストノード.strタイトル );
 			{
 				ノードリスト.Sort( delegate( C曲リストノード n1, C曲リストノード n2 )
 				{
-					#region [ 共通処理 ]
+		#region [ 共通処理 ]
 					if ( n1 == n2 )
 					{
 						return 0;
@@ -1626,7 +1632,7 @@ Debug.WriteLine( s + ":" + c曲リストノード.strタイトル );
 					{
 						return order * n1.arスコア[ 0 ].ファイル情報.フォルダの絶対パス.CompareTo( n2.arスコア[ 0 ].ファイル情報.フォルダの絶対パス );
 					}
-					#endregion
+		#endregion
 					double dBPMn1 = 0.0, dBPMn2 = 0.0;
 					if ( n1.arスコア[ nL12345 ] != null )
 					{
@@ -1655,6 +1661,50 @@ Debug.WriteLine( dBPM + ":" + c曲リストノード.strタイトル );
 			}
 		}
 #endif
+		public void tSortSongList10_BySongSkill(List<CSongListNode> ノードリスト, EInstrumentPart part, int order, params object[] p)
+		{
+			order = -order;
+			if (part != EInstrumentPart.UNKNOWN)
+			{
+				ノードリスト.Sort(delegate (CSongListNode n1, CSongListNode n2)
+				{
+					#region [ 共通処理 ]
+					if (n1 == n2)
+					{
+						return 0;
+					}
+					int num = this.t比較0_共通(n1, n2);
+					if (num != 0)
+					{
+						return order * num;
+					}
+					if ((n1.eNodeType == CSongListNode.ENodeType.BOX) && (n2.eNodeType == CSongListNode.ENodeType.BOX))
+					{
+						return order * n1.arScore[0].FileInformation.AbsoluteFolderPath.CompareTo(n2.arScore[0].FileInformation.AbsoluteFolderPath);
+					}
+					#endregion
+
+					double dbSongSkillN1 = n1.tGetHighestSongSkill(CDTXMania.ConfigIni.bGuitarRevolutionMode);
+					double dbSongSkillN2 = n2.tGetHighestSongSkill(CDTXMania.ConfigIni.bGuitarRevolutionMode);
+					
+					double d = dbSongSkillN2 - dbSongSkillN1;
+					if (d != 0)
+					{
+						return order * System.Math.Sign(d);
+					}
+					return order * n1.strタイトル.CompareTo(n2.strタイトル);
+				});
+				/*foreach (CSongListNode c曲リストノード in ノードリスト)
+				{
+					double nSongSkillN1 = 0;
+					if (c曲リストノード.arScore[nL12345] != null)
+					{
+						nSongSkillN1 = c曲リストノード.arScore[nL12345].SongInformation.HighSongSkill[(int)part];
+					}
+					// Debug.WriteLine( nSongSkillN1 + ":" + c曲リストノード.strタイトル );
+				}*/
+			}
+		}
 		//-----------------
 		#endregion
 		#region [ .score.ini を読み込んで Cスコア.譜面情報に設定する ]
@@ -1732,6 +1782,39 @@ Debug.WriteLine( dBPM + ":" + c曲リストノード.strタイトル );
 		//-----------------
 		#endregion
 
+
+		static public void tCalculateBoxSkillPoints(CSongListNode boxNode, EInstrumentPart part)
+		{
+			if (boxNode.eNodeType != CSongListNode.ENodeType.BOX)
+				return;
+
+			boxNode.dbBoxSkillPoints = 0;
+			List<double> listMaxes = new List<double>();
+			foreach (CSongListNode node in boxNode.list子リスト)
+			{
+				if (node.eNodeType != CSongListNode.ENodeType.SCORE && node.eNodeType != CSongListNode.ENodeType.SCORE_MIDI)
+					continue;
+
+				// Find which difficulty level has the highest Song Skill...
+				double nMax = 0;
+				for (int i = 0; i < 5; i++)
+				{
+					if (node.arScore[i] != null && node.arScore[i].SongInformation.HighSongSkill[(int)part] > nMax)
+						nMax = node.arScore[i].SongInformation.HighSongSkill[(int)part];
+
+				}
+				// ... and add to the list
+				listMaxes.Add(nMax);
+			}
+
+			//Sort the list of maxes and add up the 50 highest
+			listMaxes.Sort();
+
+			for (int i = 0; (i < listMaxes.Count) && (i < 50); i++)
+			{
+				boxNode.dbBoxSkillPoints += listMaxes[listMaxes.Count - i - 1];
+			}
+		}
 
 		// Other
 
