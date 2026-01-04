@@ -378,7 +378,7 @@ namespace DTXMania
 		}
 		private void t描画処理_ジャンル文字列()
 		{
-			CSongListNode c曲リストノード = CDTXMania.stageSongSelection.r現在選択中の曲;
+			CSongListNode c曲リストノード = CDTXMania.stageSongSelection.rSelectedSong;
 			CScore cスコア = CDTXMania.stageSongSelection.rSelectedScore;
 			if( ( c曲リストノード != null ) && ( cスコア != null ) )
 			{

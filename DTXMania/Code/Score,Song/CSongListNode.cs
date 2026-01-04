@@ -53,10 +53,11 @@ namespace DTXMania
 		public string strBreadcrumbs = "";		// #27060 2011.2.27 yyagi; MUSIC BOXのパンくずリスト (曲リスト構造内の絶対位置捕捉のために使う)
 		public string strSkinPath = "";			// #28195 2012.5.4 yyagi; box.defでのスキン切り替え対応
         public string strバージョン = "";
-		
-		// コンストラクタ
+        public double dbBoxSkillPoints = -1;
 
-		public CSongListNode()
+        // コンストラクタ
+
+        public CSongListNode()
 		{
 			this.nID = id++;
 		}
@@ -88,15 +89,48 @@ namespace DTXMania
 			newNode.strバージョン = this.strバージョン;
 			newNode.strBreadcrumbs = this.strBreadcrumbs;
 			newNode.strSkinPath = this.strSkinPath;
+            newNode.dbBoxSkillPoints = this.dbBoxSkillPoints;
 
-			return newNode;
+            return newNode;
 		}
 
-		// Other
+        // Other
 
-		#region [ private ]
-		//-----------------
-		private static int id;
+        public void tCalculateBoxSkillPoints(EInstrumentPart part)
+        {
+			if (this.eNodeType != CSongListNode.ENodeType.BOX)
+                return;
+
+            this.dbBoxSkillPoints = 0;
+            List<double> listMaxes = new List<double>();
+            foreach (CSongListNode node in this.list子リスト)
+            {
+                if (node.eNodeType != CSongListNode.ENodeType.SCORE && node.eNodeType != CSongListNode.ENodeType.SCORE_MIDI)
+                    continue;
+
+                // Find which difficulty level has the highest Song Skill...
+                double nMax = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (node.arScore[i] != null && node.arScore[i].SongInformation.HighSongSkill[(int)part] > nMax)
+                        nMax = node.arScore[i].SongInformation.HighSongSkill[(int)part];
+
+                }
+                // ... and add to the list
+                listMaxes.Add(nMax);
+            }
+
+            //Sort the list of maxes and add up the 50 highest
+            listMaxes.Sort();
+            for (int i = 0; (i < listMaxes.Count) && (i < 50); i++)
+            {
+                this.dbBoxSkillPoints += listMaxes[listMaxes.Count - i - 1];
+            }
+        }
+
+        #region [ private ]
+        //-----------------
+        private static int id;
 		//-----------------
 		#endregion
 	}

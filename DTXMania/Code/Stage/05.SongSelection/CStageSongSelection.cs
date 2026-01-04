@@ -96,16 +96,23 @@ namespace DTXMania
 				return this.actSongList.rSelectedScore;
 			}
 		}
-		public CSongListNode r現在選択中の曲
+		public CSongListNode rSelectedSong // r現在選択中の曲
 		{
 			get
 			{
 				return this.actSongList.rSelectedSong;
 			}
 		}
+        public CSongListNode rCurrentBox
+        {
+            get
+            {
+                return this.actSongList.rCurrentBox;
+            }
+        }
 
-		// コンストラクタ
-		public CStageSongSelection()
+        // コンストラクタ
+        public CStageSongSelection()
 		{
 			base.eStageID = CStage.EStage.SongSelection;
 			base.ePhaseID = CStage.EPhase.Common_DefaultState;
@@ -123,11 +130,12 @@ namespace DTXMania
 			base.listChildActivities.Add( this.actInformation = new CActSelectInformation() );
 			base.listChildActivities.Add( this.actSortSongs = new CActSortSongs() );
 			base.listChildActivities.Add( this.actShowCurrentPosition = new CActSelectShowCurrentPosition() );
-			base.listChildActivities.Add(this.actBackgroundVideoAVI = new CActSelectBackgroundAVI());
+			base.listChildActivities.Add( this.actBackgroundVideoAVI = new CActSelectBackgroundAVI());
 			base.listChildActivities.Add( this.actQuickConfig = new CActSelectQuickConfig() );
+            base.listChildActivities.Add( this.actBoxSkillPanel = new CActSelectPlayerSkillPanel());
 
-			//
-			base.listChildActivities.Add(this.actTextBox = new CActTextBox());
+            //
+            base.listChildActivities.Add(this.actTextBox = new CActTextBox());
 
 			this.CommandHistory = new CCommandHistory();        // #24063 2011.1.16 yyagi
 			//
@@ -150,7 +158,7 @@ namespace DTXMania
 			//---------------------
 			if( CDTXMania.app != null )
 			{
-				var c曲リストノード = CDTXMania.stageSongSelection.r現在選択中の曲;
+				var c曲リストノード = CDTXMania.stageSongSelection.rSelectedSong;
 				var cスコア = CDTXMania.stageSongSelection.rSelectedScore;
 
 				if( c曲リストノード != null && cスコア != null && c曲リストノード.eNodeType == CSongListNode.ENodeType.SCORE )
@@ -207,9 +215,10 @@ namespace DTXMania
 
 				this.actTextBox.t検索説明文を表示する設定にする();
 				this.actStatusPanel.tSelectedSongChanged(); // 最大ランクを更新
+                this.actBoxSkillPanel.tGeneratePlayerSkillPoints();
 
-				//Reset random list upon reactivation only when a change in config for drumsEnabled or RandSubBox is detected
-				bool bToReset = false;
+                //Reset random list upon reactivation only when a change in config for drumsEnabled or RandSubBox is detected
+                bool bToReset = false;
 				if(this.bCheckDrumsEnabled != CDTXMania.ConfigIni.bDrumsEnabled)
                 {
 					bToReset = true;
@@ -400,9 +409,11 @@ namespace DTXMania
 
 				this.actPresound.OnUpdateAndDraw();
 //				this.actオプションパネル.OnUpdateAndDraw();
-				this.actShowCurrentPosition.OnUpdateAndDraw();								// #27648 2011.3.28 yyagi
+				this.actShowCurrentPosition.OnUpdateAndDraw();                              // #27648 2011.3.28 yyagi
+                this.actBoxSkillPanel.OnUpdateAndDraw();
 
-				switch ( base.ePhaseID )
+
+                switch ( base.ePhaseID )
 				{
 					case CStage.EPhase.Common_FadeIn:
 						if( this.actFIFO.OnUpdateAndDraw() != 0 )
@@ -526,6 +537,7 @@ namespace DTXMania
                                                     this.eReturnValueWhenFadeOutCompleted = EReturnValue.ChangeSking;
                                                     base.ePhaseID = EPhase.選曲_NowLoading画面へのフェードアウト;
                                                 }
+												this.actBoxSkillPanel.tGeneratePlayerSkillPoints();
                                             }
                                             break;
 
@@ -538,6 +550,7 @@ namespace DTXMania
                                                     this.eReturnValueWhenFadeOutCompleted = EReturnValue.ChangeSking;
                                                     base.ePhaseID = EPhase.選曲_NowLoading画面へのフェードアウト;
                                                 }
+                                                this.actBoxSkillPanel.tGeneratePlayerSkillPoints();
                                             }
                                             break;
 
@@ -895,8 +908,9 @@ namespace DTXMania
 		private CActSelectSongList actSongList;
 		private CActSelectShowCurrentPosition actShowCurrentPosition;
 		private readonly CActSelectBackgroundAVI actBackgroundVideoAVI;
+		private CActSelectPlayerSkillPanel actBoxSkillPanel;
 
-		private CActSortSongs actSortSongs;
+        private CActSortSongs actSortSongs;
 		private CActSelectQuickConfig actQuickConfig;
 
 		//

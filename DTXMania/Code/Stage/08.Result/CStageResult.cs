@@ -56,8 +56,9 @@ namespace DTXMania
 			//base.listChildActivities.Add( this.actProgressBar = new CActPerfProgressBar(true) );
 			base.listChildActivities.Add( this.actFI = new CActFIFOWhite() );
 			base.listChildActivities.Add( this.actFO = new CActFIFOBlack() );
-			base.listChildActivities.Add(this.actBackgroundVideoAVI = new CActSelectBackgroundAVI());
-		}
+			base.listChildActivities.Add( this.actBackgroundVideoAVI = new CActSelectBackgroundAVI());
+            base.listChildActivities.Add( this.actPlayerSkillPanel = new CActResultPlayerSkillPanel());
+        }
 
 		
 		// CStage 実装
@@ -253,9 +254,10 @@ namespace DTXMania
 								if (this.bNewRecordSkill[m])
 								{
 									cScore.SongInformation.HighSkill[m] = this.stPerformanceEntry[m].dbPerformanceSkill;
-									// New Song Progress for new skill record
-									cScore.SongInformation.progress[m] = this.stPerformanceEntry[m].strProgress;
-								}
+                                    cScore.SongInformation.HighSongSkill[m] = this.stPerformanceEntry[m].dbGameSkill;
+                                    // New Song Progress for new skill record
+                                    cScore.SongInformation.progress[m] = this.stPerformanceEntry[m].strProgress;
+                                }
 
 								if (this.bNewRecordRank[m])
 								{
@@ -270,9 +272,24 @@ namespace DTXMania
 							}
 						}
 					}
-					//---------------------
-					#endregion
-				}
+                    //---------------------
+                    #endregion
+                    #region [ Update player skill points ]
+                    if (!CDTXMania.bCompactMode)
+                    {
+                        if (CDTXMania.stageSongSelection.rCurrentBox != null)
+                        {
+                            double dbOldPlayerSkillPoints = CDTXMania.stageSongSelection.rCurrentBox.dbBoxSkillPoints;
+							// TODO ERIC Check instrument choice
+                            CDTXMania.stageSongSelection.rCurrentBox.tCalculateBoxSkillPoints((EInstrumentPart)(CDTXMania.ConfigIni.bDrumsEnabled ? 0 : 1));
+                            double dbPlayerSkillPoints = CDTXMania.stageSongSelection.rCurrentBox.dbBoxSkillPoints;
+                            Trace.TraceInformation("Box Skill Points calculated to {0}", dbPlayerSkillPoints);
+                            double dbNewPlayerSkillPoints = dbPlayerSkillPoints - dbOldPlayerSkillPoints;
+                            this.actPlayerSkillPanel.tGeneratePlayerSkillPoints(dbPlayerSkillPoints, dbNewPlayerSkillPoints);
+                        }
+                        #endregion
+                    }
+                }
 
 				base.OnActivate();
 				//this.actProgressBar.t表示レイアウトを設定する(180, 540, 20, 460);
@@ -678,7 +695,8 @@ namespace DTXMania
                 {
                     this.bAnimationComplete = false;
                 }
-				if( base.ePhaseID == CStage.EPhase.Common_FadeIn )
+                this.actPlayerSkillPanel.OnUpdateAndDraw();
+                if ( base.ePhaseID == CStage.EPhase.Common_FadeIn )
 				{
 					if( this.actFI.OnUpdateAndDraw() != 0 )
 					{
@@ -830,9 +848,10 @@ namespace DTXMania
 		private CActResultParameterPanel actParameterPanel;
 		private CActResultRank actRank;
 		private CActResultImage actResultImage;
-		private CActResultSongBar actSongBar;		
-		//private CActPerfProgressBar actProgressBar;
-		private bool bAnimationComplete;  // bアニメが完了
+		private CActResultSongBar actSongBar;
+        //private CActPerfProgressBar actProgressBar;
+        private CActResultPlayerSkillPanel actPlayerSkillPanel;
+        private bool bAnimationComplete;  // bアニメが完了
 		private bool bIsCheckedWhetherResultScreenShouldSaveOrNot;				// #24509 2011.3.14 yyagi
 		private readonly int[] nチャンネル0Atoレーン07;
 		private int n最後に再生したHHのWAV番号;

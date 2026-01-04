@@ -68,7 +68,7 @@ namespace DTXMania
 
                 #region[ Generation of song title, artist name and disclaimer textures ]
                 if (string.IsNullOrEmpty(CDTXMania.DTX.TITLE) || (!CDTXMania.bCompactMode && CDTXMania.ConfigIni.b曲名表示をdefのものにする))
-                    this.strSongName = CDTXMania.stageSongSelection.r現在選択中の曲.strタイトル;
+                    this.strSongName = CDTXMania.stageSongSelection.rSelectedSong.strタイトル;
                 else
                     this.strSongName = CDTXMania.DTX.TITLE;
 

@@ -735,7 +735,8 @@ namespace DTXMania
 													node.arScore[ lv ].SongInformation.BestRank[ i ] = (int)CScoreIni.ERANK.UNKNOWN;
 												}
 												node.arScore[ lv ].SongInformation.HighSkill[ i ] = scoreIni.stSection[ nSectionHiSkill ].dbPerformanceSkill;
-												node.arScore[ lv ].SongInformation.FullCombo[ i ] = scoreIni.stSection[ nSectionHiSkill ].bIsFullCombo | scoreIni.stSection[ nSectionHiScore ].bIsFullCombo;
+                                                node.arScore[ lv ].SongInformation.HighSongSkill[i] = scoreIni.stSection[nSectionHiSkill].dbGameSkill;
+                                                node.arScore[ lv ].SongInformation.FullCombo[ i ] = scoreIni.stSection[ nSectionHiSkill ].bIsFullCombo | scoreIni.stSection[ nSectionHiScore ].bIsFullCombo;
 											}
 											node.arScore[ lv ].SongInformation.NbPerformances.Drums = scoreIni.stFile.PlayCountDrums;
 											node.arScore[ lv ].SongInformation.NbPerformances.Guitar = scoreIni.stFile.PlayCountGuitar;
@@ -790,7 +791,10 @@ namespace DTXMania
 			cスコア.SongInformation.HighSkill.Drums = br.ReadDouble();
 			cスコア.SongInformation.HighSkill.Guitar = br.ReadDouble();
 			cスコア.SongInformation.HighSkill.Bass = br.ReadDouble();
-			cスコア.SongInformation.FullCombo.Drums = br.ReadBoolean();
+            cスコア.SongInformation.HighSongSkill.Drums = br.ReadDouble();
+            cスコア.SongInformation.HighSongSkill.Guitar = br.ReadDouble();
+            cスコア.SongInformation.HighSongSkill.Bass = br.ReadDouble();
+            cスコア.SongInformation.FullCombo.Drums = br.ReadBoolean();
 			cスコア.SongInformation.FullCombo.Guitar = br.ReadBoolean();
 			cスコア.SongInformation.FullCombo.Bass = br.ReadBoolean();
 			cスコア.SongInformation.NbPerformances.Drums = br.ReadInt32();
@@ -1231,7 +1235,10 @@ namespace DTXMania
 					bw.Write( node.arScore[ i ].SongInformation.HighSkill.Drums );
 					bw.Write( node.arScore[ i ].SongInformation.HighSkill.Guitar );
 					bw.Write( node.arScore[ i ].SongInformation.HighSkill.Bass );
-					bw.Write( node.arScore[ i ].SongInformation.FullCombo.Drums );
+                    bw.Write( node.arScore[ i ].SongInformation.HighSongSkill.Drums);
+                    bw.Write( node.arScore[ i ].SongInformation.HighSongSkill.Guitar);
+                    bw.Write( node.arScore[ i ].SongInformation.HighSongSkill.Bass);
+                    bw.Write( node.arScore[ i ].SongInformation.FullCombo.Drums );
 					bw.Write( node.arScore[ i ].SongInformation.FullCombo.Guitar );
 					bw.Write( node.arScore[ i ].SongInformation.FullCombo.Bass );
 					bw.Write( node.arScore[ i ].SongInformation.NbPerformances.Drums );

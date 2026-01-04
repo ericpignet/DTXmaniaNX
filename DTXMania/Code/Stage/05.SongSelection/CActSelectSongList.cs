@@ -67,8 +67,12 @@ namespace DTXMania
 			get;
 			private set;
 		}
-
-		public int nスクロールバー相対y座標
+        public CSongListNode rCurrentBox
+        {
+            get;
+            private set;
+        }
+        public int nスクロールバー相対y座標
 		{
 			get;
 			private set;
@@ -84,7 +88,8 @@ namespace DTXMania
 		public CActSelectSongList()
 		{
 			this.rSelectedSong = null;
-			this.n現在のアンカ難易度レベル = 0;
+            this.rCurrentBox = null;
+            this.n現在のアンカ難易度レベル = 0;
 			base.bNotActivated = true;
 			this.bIsEnumeratingSongs = false;
 
@@ -235,7 +240,11 @@ namespace DTXMania
 
 			if( ( this.rSelectedSong.list子リスト != null ) && ( this.rSelectedSong.list子リスト.Count > 0 ) )
 			{
-				this.rSelectedSong = this.rSelectedSong.list子リスト[ 0 ];
+				this.rSelectedSong.tCalculateBoxSkillPoints(this.eInstrumentPart);
+                Trace.TraceInformation("Box Skill Points calculated to {0}", rSelectedSong.dbBoxSkillPoints);
+                this.rCurrentBox = this.rSelectedSong;
+
+                this.rSelectedSong = this.rSelectedSong.list子リスト[ 0 ];
 				this.t現在選択中の曲を元に曲バーを再構成する();
 				this.t選択曲が変更された(false);									// #27648 項目数変更を反映させる
 			}
@@ -254,6 +263,14 @@ namespace DTXMania
 			if ( this.rSelectedSong.r親ノード != null )
 			{
 				this.rSelectedSong = this.rSelectedSong.r親ノード;
+				if (this.rSelectedSong.r親ノード != null)
+				{
+					this.rCurrentBox = this.rSelectedSong.r親ノード;
+				}
+				else
+				{
+					this.rCurrentBox = this.rSelectedSong;
+				}
 				this.t現在選択中の曲を元に曲バーを再構成する();
 				this.t選択曲が変更された(false);									// #27648 項目数変更を反映させる
 			}
@@ -480,7 +497,7 @@ namespace DTXMania
 		/// </summary>
 		public void t選択曲が変更された( bool bForce)    // t選択曲が変更された  #27648
 		{
-			CSongListNode song = CDTXMania.stageSongSelection.r現在選択中の曲;
+			CSongListNode song = CDTXMania.stageSongSelection.rSelectedSong;
 			if ( song == null )
 				return;
 			if ( song == song_last && bForce == false )
@@ -1109,7 +1126,7 @@ namespace DTXMania
 						if ( this.stBarInformation[ nパネル番号 ].txTitleName != null )
                             this.stBarInformation[ nパネル番号 ].txTitleName.tDraw2D( CDTXMania.app.Device, i選択曲バーX座標 + 55 + titleOffsets.X, y選曲 + titleOffsets.Y);
 
-                        if (CDTXMania.stageSongSelection.r現在選択中の曲.eNodeType == CSongListNode.ENodeType.SCORE && this.actステータスパネル.txパネル本体 == null)
+                        if (CDTXMania.stageSongSelection.rSelectedSong.eNodeType == CSongListNode.ENodeType.SCORE && this.actステータスパネル.txパネル本体 == null)
                         {
                             if (this.tx選択中の曲名テクスチャ == null)
                                 this.tx選択中の曲名テクスチャ = this.tGenerateTextTexture(CDTXMania.stageSongSelection.rSelectedScore.SongInformation.Title);
