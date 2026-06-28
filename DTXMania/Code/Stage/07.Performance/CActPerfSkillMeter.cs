@@ -44,11 +44,11 @@ namespace DTXMania
         {
             get
             {
-                return this.dbグラフ値現在;
+                return this.dbグラフ値現在[(int)this.nGraphUsePart];
             }
             set
             {
-                this.dbグラフ値現在 = value;
+                this.SetCurrentGraphValue((EInstrumentPart)this.nGraphUsePart, value);
             }
         }
         public double dbGraphValue_Goal
@@ -81,13 +81,23 @@ namespace DTXMania
 			base.bNotActivated = true;
 		}
 
+        public void SetCurrentGraphValue(EInstrumentPart inst, double value)
+        {
+            if (inst == EInstrumentPart.UNKNOWN)
+            {
+                return;
+            }
+
+            this.dbグラフ値現在[(int)inst] = value;
+        }
+
 
 		// CActivity 実装
 
 		public override void OnActivate()
         {
             this.dbグラフ値目標 = 0f;
-            this.dbグラフ値現在 = 0f;
+            this.dbグラフ値現在 = default(STDGBVALUE<double>);
 
             this.n現在のAutoを含まない判定数 = new int[ 6 ];
 
@@ -214,8 +224,9 @@ namespace DTXMania
                 //ゲージ現在
                 if (this.txグラフ_ゲージ != null)
                 {
+                    double dbCurrentGraphValue = this.dbグラフ値現在[this.nGraphUsePart];
                     //ゲージ本体
-                    int nGaugeSize = (int)(434.0f * (float)this.dbグラフ値現在 / 100.0f);
+                    int nGaugeSize = (int)(434.0f * (float)dbCurrentGraphValue / 100.0f);
                     int nPosY = this.nGraphUsePart == 0 ? 527 - nGaugeSize : 587 - nGaugeSize;
                     if (!this.bIsTrainingMode)
                     {
@@ -225,7 +236,7 @@ namespace DTXMania
                     //ゲージ比較
                     int nTargetGaugeSize = (int)( 434.0f * ( (float)this.dbグラフ値目標 / 100.0f ) );
                     int nTargetGaugePosY = this.nGraphUsePart == 0 ? 527 - nTargetGaugeSize : 587 - nTargetGaugeSize;
-                    int nTargetGaugeRectX = this.dbグラフ値現在 > this.dbグラフ値目標 ? 38 : 74;
+                    int nTargetGaugeRectX = dbCurrentGraphValue > this.dbグラフ値目標 ? 38 : 74;
                     this.txグラフ_ゲージ.nTransparency = 255;
                     this.txグラフ_ゲージ.tDraw2D( CDTXMania.app.Device, nGraphBG_XPos[ this.nGraphUsePart ] + 75 + nGraphSizeOffset, nTargetGaugePosY, new Rectangle( nTargetGaugeRectX, 2, 30, nTargetGaugeSize ) );
                     if( this.txグラフ != null )
@@ -249,7 +260,7 @@ namespace DTXMania
                             this.txグラフ.tDraw2D(CDTXMania.app.Device, nGraphBG_XPos[this.nGraphUsePart] + 164, nGraphBG_YPos + 357, new Rectangle(260 + 120, 2, 30, 120));
                         }
                     }
-                    this.t比較文字表示( nGraphBG_XPos[ this.nGraphUsePart ] + 44 + nGraphSizeOffset, nPosY - 10, string.Format( "{0,5:##0.00}", Math.Abs( this.dbグラフ値現在 ) ) );
+                    this.t比較文字表示( nGraphBG_XPos[ this.nGraphUsePart ] + 44 + nGraphSizeOffset, nPosY - 10, string.Format( "{0,5:##0.00}", Math.Abs( dbCurrentGraphValue ) ) );
                     this.t比較文字表示( nGraphBG_XPos[ this.nGraphUsePart ] + 74 + nGraphSizeOffset, nTargetGaugePosY - 10, string.Format( "{0,5:##0.00}", Math.Abs( this.dbグラフ値目標 ) ) );
                 }
 
@@ -265,7 +276,7 @@ namespace DTXMania
 		//----------------
         private double dbグラフ値目標;
         private double dbグラフ値目標_表示;
-        private double dbグラフ値現在;
+        private STDGBVALUE<double> dbグラフ値現在;
         private double dbグラフ値現在_表示;
         public double dbGraphValue_PersonalBest;
         private int[] n現在のAutoを含まない判定数;

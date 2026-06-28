@@ -351,24 +351,27 @@ namespace DTXMania
 			EJudgement eJudgeResult = tProcessChipHit( nHitTime, pChip, EInstrumentPart.GUITAR, bCorrectLane );
             if(pChip.eInstrumentPart == EInstrumentPart.GUITAR)
 			{
+				double dbGraphValue;
 				if (CDTXMania.ConfigIni.nSkillMode == 0)
-					this.actGraph.dbグラフ値現在_渡 = CScoreIni.tCalculatePlayingSkillOld(CDTXMania.DTX.nVisibleChipsCount.Guitar, this.nHitCount_ExclAuto.Guitar.Perfect, this.nHitCount_ExclAuto.Guitar.Great, this.nHitCount_ExclAuto.Guitar.Good, this.nHitCount_ExclAuto.Guitar.Poor, this.nHitCount_ExclAuto.Guitar.Miss, this.actCombo.nCurrentCombo.HighestValue.Guitar, EInstrumentPart.GUITAR, bIsAutoPlay);
+					dbGraphValue = CScoreIni.tCalculatePlayingSkillOld(CDTXMania.DTX.nVisibleChipsCount.Guitar, this.nHitCount_ExclAuto.Guitar.Perfect, this.nHitCount_ExclAuto.Guitar.Great, this.nHitCount_ExclAuto.Guitar.Good, this.nHitCount_ExclAuto.Guitar.Poor, this.nHitCount_ExclAuto.Guitar.Miss, this.actCombo.nCurrentCombo.HighestValue.Guitar, EInstrumentPart.GUITAR, bIsAutoPlay);
 				else
-					this.actGraph.dbグラフ値現在_渡 = CScoreIni.tCalculatePlayingSkill(CDTXMania.DTX.nVisibleChipsCount.Guitar, this.nHitCount_ExclAuto.Guitar.Perfect, this.nHitCount_ExclAuto.Guitar.Great, this.nHitCount_ExclAuto.Guitar.Good, this.nHitCount_ExclAuto.Guitar.Poor, this.nHitCount_ExclAuto.Guitar.Miss, this.actCombo.nCurrentCombo.HighestValue.Guitar, EInstrumentPart.GUITAR, bIsAutoPlay);
-				this.actStatusPanel.db現在の達成率.Guitar = this.actGraph.dbグラフ値現在_渡;
+					dbGraphValue = CScoreIni.tCalculatePlayingSkill(CDTXMania.DTX.nVisibleChipsCount.Guitar, this.nHitCount_ExclAuto.Guitar.Perfect, this.nHitCount_ExclAuto.Guitar.Great, this.nHitCount_ExclAuto.Guitar.Good, this.nHitCount_ExclAuto.Guitar.Poor, this.nHitCount_ExclAuto.Guitar.Miss, this.actCombo.nCurrentCombo.HighestValue.Guitar, EInstrumentPart.GUITAR, bIsAutoPlay);
+				this.actStatusPanel.db現在の達成率.Guitar = dbGraphValue;
 
 				if (CDTXMania.ConfigIni.bGraph有効.Guitar)
 				{
+					this.actGraph.SetCurrentGraphValue(EInstrumentPart.GUITAR, dbGraphValue);
 
 					if (CDTXMania.listTargetGhsotLag.Guitar != null &&
 						CDTXMania.ConfigIni.eTargetGhost.Guitar == ETargetGhostData.ONLINE &&
 						CDTXMania.DTX.nVisibleChipsCount.Guitar > 0)
 					{
 
-						this.actGraph.dbグラフ値現在_渡 = 100 *
+						dbGraphValue = 100 *
 										(this.nHitCount_ExclAuto.Guitar.Perfect * 17 +
 										 this.nHitCount_ExclAuto.Guitar.Great * 7 +
 										 this.actCombo.nCurrentCombo.HighestValue.Guitar * 3) / (20.0 * CDTXMania.DTX.nVisibleChipsCount.Guitar);
+						this.actGraph.SetCurrentGraphValue(EInstrumentPart.GUITAR, dbGraphValue);
 					}
 
 					this.actGraph.n現在のAutoを含まない判定数_渡[0] = this.nHitCount_ExclAuto.Guitar.Perfect;
@@ -380,24 +383,27 @@ namespace DTXMania
 			}
 			else if(pChip.eInstrumentPart == EInstrumentPart.BASS)
 			{
+				double dbGraphValue;
 				if (CDTXMania.ConfigIni.nSkillMode == 0)
-					this.actGraph.dbグラフ値現在_渡 = CScoreIni.tCalculatePlayingSkillOld(CDTXMania.DTX.nVisibleChipsCount.Bass, this.nHitCount_ExclAuto.Bass.Perfect, this.nHitCount_ExclAuto.Bass.Great, this.nHitCount_ExclAuto.Bass.Good, this.nHitCount_ExclAuto.Bass.Poor, this.nHitCount_ExclAuto.Bass.Miss, this.actCombo.nCurrentCombo.HighestValue.Bass, EInstrumentPart.BASS, bIsAutoPlay);
+					dbGraphValue = CScoreIni.tCalculatePlayingSkillOld(CDTXMania.DTX.nVisibleChipsCount.Bass, this.nHitCount_ExclAuto.Bass.Perfect, this.nHitCount_ExclAuto.Bass.Great, this.nHitCount_ExclAuto.Bass.Good, this.nHitCount_ExclAuto.Bass.Poor, this.nHitCount_ExclAuto.Bass.Miss, this.actCombo.nCurrentCombo.HighestValue.Bass, EInstrumentPart.BASS, bIsAutoPlay);
 				else
-					this.actGraph.dbグラフ値現在_渡 = CScoreIni.tCalculatePlayingSkill(CDTXMania.DTX.nVisibleChipsCount.Bass, this.nHitCount_ExclAuto.Bass.Perfect, this.nHitCount_ExclAuto.Bass.Great, this.nHitCount_ExclAuto.Bass.Good, this.nHitCount_ExclAuto.Bass.Poor, this.nHitCount_ExclAuto.Bass.Miss, this.actCombo.nCurrentCombo.HighestValue.Bass, EInstrumentPart.BASS, bIsAutoPlay);
-				this.actStatusPanel.db現在の達成率.Bass = this.actGraph.dbグラフ値現在_渡;
+					dbGraphValue = CScoreIni.tCalculatePlayingSkill(CDTXMania.DTX.nVisibleChipsCount.Bass, this.nHitCount_ExclAuto.Bass.Perfect, this.nHitCount_ExclAuto.Bass.Great, this.nHitCount_ExclAuto.Bass.Good, this.nHitCount_ExclAuto.Bass.Poor, this.nHitCount_ExclAuto.Bass.Miss, this.actCombo.nCurrentCombo.HighestValue.Bass, EInstrumentPart.BASS, bIsAutoPlay);
+				this.actStatusPanel.db現在の達成率.Bass = dbGraphValue;
 
 				if (CDTXMania.ConfigIni.bGraph有効.Bass)
 				{
+					this.actGraph.SetCurrentGraphValue(EInstrumentPart.BASS, dbGraphValue);
 
 					if (CDTXMania.listTargetGhsotLag.Bass != null &&
 						CDTXMania.ConfigIni.eTargetGhost.Bass == ETargetGhostData.ONLINE &&
 						CDTXMania.DTX.nVisibleChipsCount.Bass > 0)
 					{
 
-						this.actGraph.dbグラフ値現在_渡 = 100 *
+						dbGraphValue = 100 *
 										(this.nHitCount_ExclAuto.Bass.Perfect * 17 +
 										 this.nHitCount_ExclAuto.Bass.Great * 7 +
 										 this.actCombo.nCurrentCombo.HighestValue.Bass * 3) / (20.0 * CDTXMania.DTX.nVisibleChipsCount.Bass);
+						this.actGraph.SetCurrentGraphValue(EInstrumentPart.BASS, dbGraphValue);
 					}
 
 					this.actGraph.n現在のAutoを含まない判定数_渡[0] = this.nHitCount_ExclAuto.Bass.Perfect;
