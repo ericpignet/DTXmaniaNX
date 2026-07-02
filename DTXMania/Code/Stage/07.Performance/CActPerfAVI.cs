@@ -772,9 +772,9 @@ namespace DTXMania
                             if( this.rAVI != null )
                             {
                                 if( this.fClipアスペクト比 < 1.77f )
-                                    this.tx描画用.tDraw2D( CDTXMania.app.Device, this.position2, 5 + this.n本体Y );
+                                    this.tx描画用.tDraw2DUpsideDown( CDTXMania.app.Device, this.position2, 5 + this.n本体Y );
                                 else
-                                    this.tx描画用.tDraw2D( CDTXMania.app.Device, 30 + this.n本体X, this.position2 );
+                                    this.tx描画用.tDraw2DUpsideDown( CDTXMania.app.Device, 30 + this.n本体X, this.position2 );
                             }
                         }
                         #endregion
