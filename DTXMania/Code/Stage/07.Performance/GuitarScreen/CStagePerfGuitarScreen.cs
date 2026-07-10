@@ -454,7 +454,7 @@ namespace DTXMania
 			{
 				if ( CDTXMania.DTX.bチップがある.Guitar )
 				{
-                    int y = CDTXMania.ConfigIni.bReverse.Guitar ? this.nJudgeLinePosY.Guitar : this.nJudgeLinePosY.Guitar - 1;
+                    int y = CDTXMania.ConfigIni.bReverse.Guitar ? this.nJudgeLinePosY.Guitar + this.nJudgeLinePosY_delta.Guitar : this.nJudgeLinePosY.Guitar - 1 + this.nJudgeLinePosY_delta.Guitar;
 
 						if ( this.txHitBar != null && CDTXMania.ConfigIni.bJudgeLineDisp.Guitar )
 							this.txHitBar.tDraw2D( CDTXMania.app.Device, 80, y, new Rectangle( 0, 0, 252, 6 ) );
@@ -464,7 +464,7 @@ namespace DTXMania
 				}
 				if ( CDTXMania.DTX.bチップがある.Bass )
 				{
-                    int y = CDTXMania.ConfigIni.bReverse.Bass ? this.nJudgeLinePosY.Bass : this.nJudgeLinePosY.Bass - 1;
+                    int y = CDTXMania.ConfigIni.bReverse.Bass ? this.nJudgeLinePosY.Bass + this.nJudgeLinePosY_delta.Bass : this.nJudgeLinePosY.Bass - 1 + this.nJudgeLinePosY_delta.Bass;
 
 						if ( this.txHitBar != null && CDTXMania.ConfigIni.bJudgeLineDisp.Bass )
                             this.txHitBar.tDraw2D(CDTXMania.app.Device, 950, y, new Rectangle(0, 0, 252, 6));
@@ -555,7 +555,7 @@ namespace DTXMania
 		protected override void tUpdateAndDraw_Chip_GuitarBass( CConfigIni configIni, ref CDTX dTX, ref CChip pChip, EInstrumentPart inst )
 		{
 			base.tUpdateAndDraw_Chip_GuitarBass( configIni, ref dTX, ref pChip, inst,
-                this.nJudgeLinePosY[ (int) inst ] + 10, this.nJudgeLinePosY[ (int) inst ] + 1, 104, 670, 0, 0, 0, 11, 196, 10, 38, 38, 1000, 1000, 1000, 38, 38);
+                this.nJudgeLinePosY[ (int) inst ] + 1, this.nJudgeLinePosY[ (int) inst ] + 1, 104, 670, 0, 0, 0, 11, 196, 10, 38, 38, 1000, 1000, 1000, 38, 38);
 		}
 #if false
 		protected override void t進行描画_チップ_ギターベース( CConfigIni configIni, ref CDTX dTX, ref CChip pChip, E楽器パート inst )
@@ -954,7 +954,7 @@ namespace DTXMania
 			}
 			if ( ( pChip.bVisible && configIni.bGuitarEnabled ))
 			{
-                int y = CDTXMania.ConfigIni.bReverse.Guitar ? ((this.nJudgeLinePosY.Guitar - pChip.nDistanceFromBar.Guitar) + 0) : ((this.nJudgeLinePosY.Guitar + pChip.nDistanceFromBar.Guitar) + 9);
+                int y = CDTXMania.ConfigIni.bReverse.Guitar ? ((this.nJudgeLinePosY.Guitar - pChip.nDistanceFromBar.Guitar) + 0) : ((this.nJudgeLinePosY.Guitar + pChip.nDistanceFromBar.Guitar) + 0);
                 if ( ( dTX.bチップがある.Guitar && ( y > 104 ) ) && ( ( y < 670 ) && ( this.txChip != null ) ) )
                 {
 					if (CDTXMania.ConfigIni.nLaneDisp.Guitar == 0 || CDTXMania.ConfigIni.nLaneDisp.Guitar == 1)
@@ -968,7 +968,7 @@ namespace DTXMania
                         CDTXMania.actDisplayString.tPrint(60, y - 16, CCharacterConsole.EFontType.White, n小節番号.ToString());
                     }
 				}
-                y = CDTXMania.ConfigIni.bReverse.Bass ? ((this.nJudgeLinePosY.Bass - pChip.nDistanceFromBar.Bass) + 0) : ((this.nJudgeLinePosY.Bass + pChip.nDistanceFromBar.Bass) + 9);
+                y = CDTXMania.ConfigIni.bReverse.Bass ? ((this.nJudgeLinePosY.Bass - pChip.nDistanceFromBar.Bass) + 0) : ((this.nJudgeLinePosY.Bass + pChip.nDistanceFromBar.Bass) + 0);
                 if ( ( dTX.bチップがある.Bass && ( y > 104 ) ) && ( ( y < 670 ) && ( this.txChip != null ) ) )
                 {
                     if( CDTXMania.ConfigIni.nLaneDisp.Bass == 0 || CDTXMania.ConfigIni.nLaneDisp.Bass == 1 )
@@ -999,7 +999,7 @@ namespace DTXMania
 
 			if (configIni.bGuitarEnabled)
 			{
-				int y = CDTXMania.ConfigIni.bReverse.Guitar ? ((this.nJudgeLinePosY.Guitar - nDistanceFromBarGuitar) + 0) : ((this.nJudgeLinePosY.Guitar + nDistanceFromBarGuitar) + 9);
+				int y = CDTXMania.ConfigIni.bReverse.Guitar ? ((this.nJudgeLinePosY.Guitar - nDistanceFromBarGuitar) + 0) : ((this.nJudgeLinePosY.Guitar + nDistanceFromBarGuitar) + 0);
 				if ((CDTXMania.DTX.bチップがある.Guitar && (y > 104)) && ((y < 670) && (this.txChip != null)))
 				{
 					//Display Loop Begin/Loop End text
@@ -1012,7 +1012,7 @@ namespace DTXMania
 						this.txChip.tDraw2D(CDTXMania.app.Device, 88, y + 1, new Rectangle(0, 20, 193, 2));
 					}
 				}
-				y = CDTXMania.ConfigIni.bReverse.Bass ? ((this.nJudgeLinePosY.Bass - nDistanceFromBarBass) + 0) : ((this.nJudgeLinePosY.Bass + nDistanceFromBarBass) + 9);
+				y = CDTXMania.ConfigIni.bReverse.Bass ? ((this.nJudgeLinePosY.Bass - nDistanceFromBarBass) + 0) : ((this.nJudgeLinePosY.Bass + nDistanceFromBarBass) + 0);
 				if ((CDTXMania.DTX.bチップがある.Bass && (y > 104)) && ((y < 670) && (this.txChip != null)))
 				{
 					//Display Loop Begin/Loop End text
