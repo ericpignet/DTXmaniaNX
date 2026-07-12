@@ -1551,6 +1551,11 @@ for (int i = 0; i < 3; i++) {
                                         cPerfEntry_Guitar = cPerfEntry_Bass;
                                         cPerfEntry_Bass = t;
 
+                                        CStagePerfCommonScreen.CLAGTIMINGHITCOUNT tLagHitCount;
+                                        tLagHitCount = stageResult.nTimingHitCount.Guitar;
+                                        stageResult.nTimingHitCount.Guitar = stageResult.nTimingHitCount.Bass;
+                                        stageResult.nTimingHitCount.Bass = tLagHitCount;
+
                                         CDTXMania.DTX.SwapGuitarBassInfos();			// 譜面情報も元に戻す
                                         CDTXMania.ConfigIni.SwapGuitarBassInfos_AutoFlags(); // #24415 2011.2.27 yyagi
                                         // リザルト集計時のみ、Auto系のフラグも元に戻す。
